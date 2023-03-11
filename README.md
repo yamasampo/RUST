@@ -1,3 +1,6 @@
+This branch contains the original code of RUST 1.2 with some minor updates to handle some errors encountered when testing. 
+Keep this branch as a copy of the python 2.7 compatible version 
+
 # RUST - Ribo-seq Unit Seq Transform 
 
 This program was developed by [Patrick O'Connor](https://pubmed.ncbi.nlm.nih.gov/?term=%22O%E2%80%99Connor+PBF%22%5BAuthor%5D) as part of his work in [LAPTI](http://lapti.ucc.ie) in University College Cork. 

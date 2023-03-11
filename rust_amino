@@ -30,6 +30,8 @@ def stop_err( msg):
     sys.exit()
     
 def mean_value(input_list):
+    if len(input_list) == 0:
+        return 0
     return(sum(map(float, input_list))/len(input_list))    
 
 def translate_dna(sequence):
@@ -67,7 +69,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
         linesplit = line.split(",")
         if len(linesplit) == 1 :break
         codon = linesplit[0]
-        coverage =  map(float, linesplit[1:])
+        coverage =  list(map(float, linesplit[1:]))
         coverage_a = coverage[0]
         if coverage_a == 0: continue
         coverage_n = [n/coverage_a for n in coverage[1:]]
@@ -78,7 +80,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
     line = infileopen36.readline()
     linesplit = line.split(",")
     if "NA" not in line:
-        coverage =  map(float, linesplit[2:])
+        coverage =  list(map(float, linesplit[2:]))
         ax2 = ax36.twinx()
         ax2.plot(coverage,color = "blue")
         for tl in ax2.get_yticklabels():
@@ -242,7 +244,7 @@ def main():
                 codon_enrichment_expected_dict[amino_acid_1].append(expected_codon_density)
                     
                 peptide_start += 1
-    #print 1
+
     alignment_filename = args.a.split("/")[-1]
     if not os.path.exists(args.o) : os.mkdir(args.o )
     outfile = open("%s/RUST_amino_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values), "w")
@@ -251,7 +253,7 @@ def main():
     outfile.write("\n")
 
     list_codons = []
-    list_amino_acids 		= amino_enrichment_dict.keys()
+    list_amino_acids 		= list(amino_enrichment_dict)
     list_amino_acids.sort()
     rust_expected = []
     rust_observed_metafootprint = []

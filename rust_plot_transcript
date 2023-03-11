@@ -57,7 +57,7 @@ def main():
         if len(codon) != 3 or len(set(codon)-set(["A","T","G","C"]))!= 0:
             stop_err("Codon metafootprint file not correct, check input file")
         codon_rust_dict[codon] = {}
-        rust_values =  map(float, linesplit[1:])
+        rust_values =  list(map(float, linesplit[1:]))
         expected = rust_values[0]
         rust_metafootprint = [ro_value/expected for ro_value in rust_values[1:]]
         for n in range(34,46) :
@@ -106,7 +106,7 @@ def main():
     #elif "\\" in args.rustfile:
         #rustfile_split= args.rustfile.split("\\")[-1]
     else:
-        rustfile_split = rustfile
+        rustfile_split = args.rustfile
     
     if "RUST_codon_file_" in rustfile_split:
         alignment_filename = rustfile_split[16:]

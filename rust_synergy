@@ -42,7 +42,7 @@ def main():
         linesplit = line[:-1].split(",")
         if len(linesplit) == 1 :break
         amino = linesplit[0]
-        coverage =  map(float, linesplit[1:])
+        coverage =  list(map(float, linesplit[1:]))
         coverage_a = coverage[0]
         if coverage_a == 0: continue
         coverage_n = [n/coverage_a for n in coverage[1:]]
@@ -68,7 +68,7 @@ def main():
                 #if os.path.exists( tmp_dir ): shutil.rmtree( tmp_dir )
                 exit()
             if amino2 in amino:
-                coverage =  map(float, linesplit[1:])
+                coverage =  list(map(float, linesplit[1:]))
                 coverage_a = coverage[0]
                 if coverage_a == 0: continue
                 if amino2 == aminoA:
@@ -123,7 +123,7 @@ def main():
         
     outfile = open("%s/synergy_%s_%s"%(args.o,amino_file, tripeptide_file),"w")
     outfile.write("Tripeptide, Standard score, distance of 1st residue from A-site, fold change\n")
-    zipped_list = zip(list_zscores, list_amino, list_loc,list_fold_change)
+    zipped_list = list(zip(list_zscores, list_amino, list_loc,list_fold_change))
     zipped_list.sort()
     zipped_list.reverse()
     for zscore, amino, loc,fold_change in zipped_list :
