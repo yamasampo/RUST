@@ -70,7 +70,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
         linesplit = line.split(",")
         if len(linesplit) == 1 :break
         nucleotide_type = linesplit[0]
-        coverage =  map(float, linesplit[1:])
+        coverage =  list(map(float, linesplit[1:]))
         coverage_a = coverage[0]
         if coverage_a == 0: continue
         coverage_n = [n/coverage_a for n in coverage[1:]]
@@ -85,7 +85,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
         linesplit = line.split(",")
         if len(linesplit) == 1 :break
         nucleotide_type = linesplit[0]
-        coverage =  map(float, linesplit[1:])
+        coverage =  list(map(float, linesplit[1:]))
         coverage_a = coverage[0]
         if coverage_a == 0: continue
         coverage_n = [n/coverage_a for n in coverage[1:]]
@@ -99,7 +99,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
     line = infileopen36.readline()
     linesplit = line.split(",")
     if "NA" not in line[:-3]:
-        coverage =  map(float, linesplit[2:-1])
+        coverage =  list(map(float, linesplit[2:-1]))
         ax2 = ax36.twinx()
         ax2.plot(coverage,color = "blue")
         for tl in ax2.get_yticklabels():
@@ -279,7 +279,7 @@ def main():
     outfile.write("\n")
 
     list_codons = []
-    list_amino_acids 		= dipeptide_enrichment_dict.keys()
+    list_amino_acids 		= list(dipeptide_enrichment_dict.keys())
     list_amino_acids.sort()
     rust_expected = []
     rust_observed_metafootprint = []
