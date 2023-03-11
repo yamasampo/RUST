@@ -43,7 +43,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
         linesplit = line.split(",")
         if len(linesplit) == 1 :break
         codon = linesplit[0]
-        coverage =  map(float, linesplit[1:])
+        coverage =  list(map(float, linesplit[1:]))
         coverage_a = coverage[0]
         if coverage_a == 0: continue
         coverage_n = [n/coverage_a for n in coverage[1:]]
@@ -93,13 +93,13 @@ def A_site_plot(infileopen35,dict_codon75,axis_Asite53,loc2):
         codon = linesplit[0]
         if codon in ["TAA","TAG","TGA"] :continue
         list1.append(linesplit[0])
-        coverage =  map(float, linesplit[1:])
+        coverage =  list(map(float, linesplit[1:]))
         coverage_a = coverage[0]
         coverage_n = [n/coverage_a for n in coverage[1:]]
         list2.append(float(coverage_n[loc2]))
 
         amino = codon_to_amino_dict[linesplit[0]]
-        if dict_amino_value.has_key(amino):
+        if amino in dict_amino_value:
             dict_amino_value[codon_to_amino_dict[linesplit[0]]].append(float(coverage_n[loc2]))
         else:
             dict_amino_value[codon_to_amino_dict[linesplit[0]]] = [float(coverage_n[loc2])]
@@ -110,7 +110,7 @@ def A_site_plot(infileopen35,dict_codon75,axis_Asite53,loc2):
     list_amino_sorted.sort()
         
     A_site_value_norm = [n/min(list2) for n in list2]
-    list3 = zip(A_site_value_norm,list1)
+    list3 = list(zip(A_site_value_norm,list1))
     list3.sort()
     A_site_value_norm_dict = {}
     for tupel in list3:
@@ -345,7 +345,7 @@ def main():
     outfile.write("\n")
 
     list_codons = []
-    codons 		= codon_enrichment_dict.keys()
+    codons 		= list(codon_enrichment_dict)
     codons.sort()
     rust_expected = []
     rust_observed_metafootprint = []
@@ -392,48 +392,47 @@ def main():
     for value in shannon_values: outfile.write(", %s"%value)
     outfile.close()
         
-    # try:
-    mpl.rcParams["xtick.direction"]        = "out"
-    mpl.rcParams["ytick.direction"]        = "out"
-    mpl.rcParams["legend.fontsize"]        = 10
-    mpl.rcParams["ytick.labelsize"]        = 10
-    mpl.rcParams["xtick.labelsize"]        = 10
-    mpl.rcParams['font.size']              = 10
-    mpl.rcParams["axes.titlesize"]         = 10
-    mpl.rcParams["legend.frameon"]         = 0
-    mpl.rcParams["axes.axisbelow"]         = False
-    mpl.rcParams["xtick.major.pad"]        = 2.
-    mpl.rcParams["ytick.major.pad"]        = 2
-    mpl.rcParams["xtick.major.size"]       = 2.
-    mpl.rcParams["ytick.major.size"]       = 2
-    mpl.rcParams['axes.linewidth']         = 0.5
-    mpl.rcParams['ytick.major.width']      = 0.25
-    mpl.rcParams['xtick.major.width']      = 0.25
-    mpl.rcParams['lines.linewidth']        = 1
-    mpl.rcParams["legend.borderpad"]       = 0.01
-    mpl.rcParams["legend.labelspacing"]    = 0.05
-    mpl.rcParams["legend.columnspacing"]   = 0.5
-    mpl.rcParams["legend.borderaxespad"]   =0.15
-    mpl.rcParams["legend.handlelength"]    = 1
+    try:
+        mpl.rcParams["xtick.direction"]        = "out"
+        mpl.rcParams["ytick.direction"]        = "out"
+        mpl.rcParams["legend.fontsize"]        = 10
+        mpl.rcParams["ytick.labelsize"]        = 10
+        mpl.rcParams["xtick.labelsize"]        = 10
+        mpl.rcParams['font.size']              = 10
+        mpl.rcParams["axes.titlesize"]         = 10
+        mpl.rcParams["legend.frameon"]         = 0
+        mpl.rcParams["axes.axisbelow"]         = False
+        mpl.rcParams["xtick.major.pad"]        = 2.
+        mpl.rcParams["ytick.major.pad"]        = 2
+        mpl.rcParams["xtick.major.size"]       = 2.
+        mpl.rcParams["ytick.major.size"]       = 2
+        mpl.rcParams['axes.linewidth']         = 0.5
+        mpl.rcParams['ytick.major.width']      = 0.25
+        mpl.rcParams['xtick.major.width']      = 0.25
+        mpl.rcParams['lines.linewidth']        = 1
+        mpl.rcParams["legend.borderpad"]       = 0.01
+        mpl.rcParams["legend.labelspacing"]    = 0.05
+        mpl.rcParams["legend.columnspacing"]   = 0.5
+        mpl.rcParams["legend.borderaxespad"]   =0.15
+        mpl.rcParams["legend.handlelength"]    = 1
 
-    fig = plt.figure(figsize = (6.69,6.0))  
-    infileopen = open("%s/RUST_codon_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values))
-    ax1_metafootprint= fig.add_subplot(111)   
-    RUST_metagene_plot(infileopen, ax1_metafootprint)
-    plt.savefig("%s/RUST_codon_metafootprint_%s_%s_%s.png"%(args.o, alignment_filename, args.offset, length_values))
-    plt.clf()
-
-
-    infileopen = open("%s/RUST_codon_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values) )
-    ax1codon_Asite = fig.add_subplot(111)   
-    A_site_plot(infileopen, universal_code, ax1codon_Asite,40)
-    plt.savefig("%s/A_site_%s_%s_%s.png"%(args.o, alignment_filename, args.offset, length_values))
+        fig = plt.figure(figsize = (6.69,6.0))  
+        infileopen = open("%s/RUST_codon_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values))
+        ax1_metafootprint= fig.add_subplot(111)   
+        RUST_metagene_plot(infileopen, ax1_metafootprint)
+        plt.savefig("%s/RUST_codon_metafootprint_%s_%s_%s.png"%(args.o, alignment_filename, args.offset, length_values))
+        plt.clf()
 
 
-    # except:
-    #     sys.stdout.write("Error producing images\n")
+        infileopen = open("%s/RUST_codon_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values) )
+        ax1codon_Asite = fig.add_subplot(111)   
+        A_site_plot(infileopen, universal_code, ax1codon_Asite,40)
+        plt.savefig("%s/A_site_%s_%s_%s.png"%(args.o, alignment_filename, args.offset, length_values))
 
-    #     raise Exception("Error producing images\n")        
+
+    except:
+        sys.stdout.write("Error producing images\n")
+
 if __name__ == "__main__":
     main()
 
