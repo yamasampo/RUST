@@ -19,6 +19,7 @@
 
 
 import  os,  re, pysam, sys, math, argparse
+from decimal import Decimal
 try:
     import matplotlib as mpl
     mpl.use("Agg")
@@ -46,7 +47,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
         coverage_a = coverage[0]
         if coverage_a == 0: continue
         coverage_n = [n/coverage_a for n in coverage[1:]]
-        log2_values = [math.log(n,2) for n in coverage_n ]
+        log2_values = [math.log(n,2)  if n != 0 else float('-inf') for n in coverage_n]
         ax36.plot(log2_values,color = "gray")
 
     line = infileopen36.readline()
@@ -391,47 +392,48 @@ def main():
     for value in shannon_values: outfile.write(", %s"%value)
     outfile.close()
         
-    try:
-        mpl.rcParams["xtick.direction"]        = "out"
-        mpl.rcParams["ytick.direction"]        = "out"
-        mpl.rcParams["legend.fontsize"]        = 10
-        mpl.rcParams["ytick.labelsize"]        = 10
-        mpl.rcParams["xtick.labelsize"]        = 10
-        mpl.rcParams['font.size']              = 10
-        mpl.rcParams["axes.titlesize"]         = 10
-        mpl.rcParams["legend.frameon"]         = 0
-        mpl.rcParams["axes.axisbelow"]         = False
-        mpl.rcParams["xtick.major.pad"]        = 2.
-        mpl.rcParams["ytick.major.pad"]        = 2
-        mpl.rcParams["xtick.major.size"]       = 2.
-        mpl.rcParams["ytick.major.size"]       = 2
-        mpl.rcParams['axes.linewidth']         = 0.5
-        mpl.rcParams['ytick.major.width']      = 0.25
-        mpl.rcParams['xtick.major.width']      = 0.25
-        mpl.rcParams['lines.linewidth']        = 1
-        mpl.rcParams["legend.borderpad"]       = 0.01
-        mpl.rcParams["legend.labelspacing"]    = 0.05
-        mpl.rcParams["legend.columnspacing"]   = 0.5
-        mpl.rcParams["legend.borderaxespad"]   =0.15
-        mpl.rcParams["legend.handlelength"]    = 1
+    # try:
+    mpl.rcParams["xtick.direction"]        = "out"
+    mpl.rcParams["ytick.direction"]        = "out"
+    mpl.rcParams["legend.fontsize"]        = 10
+    mpl.rcParams["ytick.labelsize"]        = 10
+    mpl.rcParams["xtick.labelsize"]        = 10
+    mpl.rcParams['font.size']              = 10
+    mpl.rcParams["axes.titlesize"]         = 10
+    mpl.rcParams["legend.frameon"]         = 0
+    mpl.rcParams["axes.axisbelow"]         = False
+    mpl.rcParams["xtick.major.pad"]        = 2.
+    mpl.rcParams["ytick.major.pad"]        = 2
+    mpl.rcParams["xtick.major.size"]       = 2.
+    mpl.rcParams["ytick.major.size"]       = 2
+    mpl.rcParams['axes.linewidth']         = 0.5
+    mpl.rcParams['ytick.major.width']      = 0.25
+    mpl.rcParams['xtick.major.width']      = 0.25
+    mpl.rcParams['lines.linewidth']        = 1
+    mpl.rcParams["legend.borderpad"]       = 0.01
+    mpl.rcParams["legend.labelspacing"]    = 0.05
+    mpl.rcParams["legend.columnspacing"]   = 0.5
+    mpl.rcParams["legend.borderaxespad"]   =0.15
+    mpl.rcParams["legend.handlelength"]    = 1
 
-        fig = plt.figure(figsize = (6.69,6.0))  
-        infileopen = open("%s/RUST_codon_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values))
-        ax1_metafootprint= fig.add_subplot(111)   
-        RUST_metagene_plot(infileopen, ax1_metafootprint)
-        plt.savefig("%s/RUST_codon_metafootprint_%s_%s_%s.png"%(args.o, alignment_filename, args.offset, length_values))
-        plt.clf()
-
-
-        infileopen = open("%s/RUST_codon_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values) )
-        ax1codon_Asite = fig.add_subplot(111)   
-        A_site_plot(infileopen, universal_code, ax1codon_Asite,40)
-        plt.savefig("%s/A_site_%s_%s_%s.png"%(args.o, alignment_filename, args.offset, length_values))
+    fig = plt.figure(figsize = (6.69,6.0))  
+    infileopen = open("%s/RUST_codon_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values))
+    ax1_metafootprint= fig.add_subplot(111)   
+    RUST_metagene_plot(infileopen, ax1_metafootprint)
+    plt.savefig("%s/RUST_codon_metafootprint_%s_%s_%s.png"%(args.o, alignment_filename, args.offset, length_values))
+    plt.clf()
 
 
-    except:
-        sys.stdout.write("Error producing images\n")
-        
+    infileopen = open("%s/RUST_codon_file_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values) )
+    ax1codon_Asite = fig.add_subplot(111)   
+    A_site_plot(infileopen, universal_code, ax1codon_Asite,40)
+    plt.savefig("%s/A_site_%s_%s_%s.png"%(args.o, alignment_filename, args.offset, length_values))
+
+
+    # except:
+    #     sys.stdout.write("Error producing images\n")
+
+    #     raise Exception("Error producing images\n")        
 if __name__ == "__main__":
     main()
 
