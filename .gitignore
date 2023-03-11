@@ -133,5 +133,10 @@ amino/
 codon/
 dipeptide/
 nucleotide/
+tripeptide/
+synergy/
+predict_profiles/
+plot_transcript/
+
 
 .vscode
