@@ -109,7 +109,7 @@ def main():
         amino_file_split= args.RUST_amino.split("/")[-1]
     else:
         amino_file_split= args.RUST_amino
-    if "RUST_amino_file_" in rustfile_split:
+    if "RUST_amino_file_" in amino_file_split:
         amino_file =amino_file_split[16:]
     else: amino_file =amino_file_split
     
@@ -117,7 +117,7 @@ def main():
         tripeptide_file_split= args.RUST_tripeptide.split("/")[-1]
     else:
         tripeptide_file_split= args.RUST_tripeptide
-    if "RUST_tripeptide_file_" in rustfile_split:
+    if "RUST_tripeptide_file_" in tripeptide_file_split:
         tripeptide_file =tripeptide_file_split[21:]
     else: tripeptide_file =tripeptide_file_split
         
