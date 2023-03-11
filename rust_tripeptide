@@ -68,7 +68,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
         linesplit = line.split(",")
         if len(linesplit) == 1 :break
         nucleotide_type = linesplit[0]
-        coverage =  map(float, linesplit[1:])
+        coverage =  list(map(float, linesplit[1:]))
         coverage_a = coverage[0]
         if coverage_a == 0: continue
         coverage_n = [n/coverage_a for n in coverage[1:]]
@@ -237,7 +237,7 @@ def main():
     outfile.write("\n")
 
     list_codons = []
-    list_amino_acids 		= tripeptide_enrichment_dict.keys()
+    list_amino_acids 		= list(tripeptide_enrichment_dict.keys())
     list_amino_acids.sort()
     for amino2 in list_amino_acids :
         if amino2 in list_codons :continue
