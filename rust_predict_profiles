@@ -114,7 +114,7 @@ def main():
     #elif "\\" in args.rustfile:
         #rustfile_split= args.rustfile.split("\\")[-1]
     else:
-        rustfile_split = rustfile
+        rustfile_split = args.rustfile
 
     if "RUST_codon_file_" in rustfile_split:
         alignment_filename = rustfile_split[16:]
