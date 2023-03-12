@@ -18,7 +18,13 @@
 #####################################################################################
 
 import  os,  re, pysam, sys, math, argparse
-from RUST.methods import *
+import RUST
+# from RUST.methods import *
+
+# get RUST attributes
+print(type(RUST))
+RUST_attributes = RUST.__dict__
+print(RUST_attributes)
 
 try:
     import matplotlib as mpl
