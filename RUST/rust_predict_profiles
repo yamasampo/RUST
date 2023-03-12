@@ -18,10 +18,10 @@
 #####################################################################################
 
 import os, pysam,sys, numpy,argparse, re
+from RUST.methods import *
 
-def mean_value(input_list):
-    return(sum(map(float, input_list))/len(input_list))  
-    
+
+
 def rank(lsit1):
     lsit2 = []
     lsit1s = lsit1[:]
@@ -34,9 +34,6 @@ def rank(lsit1):
         lsit2.append(mean_value(dict_ranks[value]))
     return lsit2
 
-def stop_err( msg):
-    sys.stderr.write( '%s\n' % msg )
-    sys.exit()
 
 def main():
     parser = argparse.ArgumentParser(description='Correlation between observed and predicted profiles from CDS start + 120 to CDS stop - 60')

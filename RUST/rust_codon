@@ -19,7 +19,8 @@
 
 
 import  os,  re, pysam, sys, math, argparse
-from decimal import Decimal
+from RUST.methods import *
+
 try:
     import matplotlib as mpl
     mpl.use("Agg")
@@ -27,13 +28,6 @@ try:
     from pylab import MaxNLocator
 except: pass    
 
-
-def stop_err( msg):
-    sys.stderr.write( '%s\n' % msg )
-    sys.exit()
-    
-def mean_value(input_list):
-    return(sum(map(float, input_list))/len(input_list))  
     
 def RUST_metagene_plot(infileopen36,ax36) :
     infileopen36.seek(0)

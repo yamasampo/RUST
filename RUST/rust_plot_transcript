@@ -18,6 +18,8 @@
 #####################################################################################
 
 import  os,  re, pysam, sys, math, argparse
+from RUST.methods import *
+
 try:
     import numpy
 except : pass
@@ -29,12 +31,7 @@ try:
     from pylab import MaxNLocator
 except: pass    
 
-def mean_value(input_list):
-    return(sum(map(float, input_list))/len(input_list))  
 
-def stop_err( msg):
-    sys.stderr.write( '%s\n' % msg )
-    sys.exit()
 def main():
     parser = argparse.ArgumentParser(description='Plot observed and predicted ribosome profiles')
     parser.add_argument('t',metavar='transcriptome', help = 'fasta file of transcripts, CDS start and end may be provided on description line using tab separation e.g. >NM_0001  10  5000, otherwise it searches for longest ORF')
