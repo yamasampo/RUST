@@ -19,7 +19,7 @@
 
 import  os,  re, pysam, sys, math, argparse
 import RUST
-# from RUST.methods import *
+from RUST.methods import *
 
 # get RUST attributes
 print(type(RUST))
