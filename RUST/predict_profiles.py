@@ -127,7 +127,7 @@ def main(args):
 
     if not os.path.exists(args.Path):
         os.mkdir(args.Path)
-    if args.p:
+    if args.profiles:
         if not os.path.exists("%s/rust_profile_predictions" % args.Path):
             os.mkdir("%s/rust_profile_predictions" % args.Path)
 

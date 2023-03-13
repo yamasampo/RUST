@@ -46,7 +46,7 @@ def main(args):
         "Y",
     ]
 
-    infileopen = open(args.RUST_tripeptide)
+    infileopen = open(args.tri)
     infileopen.readline()
     list_amino = []
     list_zscores = []
@@ -74,7 +74,7 @@ def main(args):
         aminoB = amino[1]
         aminoC = amino[2]
 
-        infileopen2 = open(args.RUST_amino)
+        infileopen2 = open(args.aa)
         infileopen2.seek(0)
         infileopen2.readline()
         for line2 in infileopen2:
@@ -135,19 +135,19 @@ def main(args):
 
     if not os.path.exists(args.Path):
         os.mkdir(args.Path)
-    if "/" in args.RUST_amino:
-        amino_file_split = args.RUST_amino.split("/")[-1]
+    if "/" in args.aa:
+        amino_file_split = args.aa.split("/")[-1]
     else:
-        amino_file_split = args.RUST_amino
+        amino_file_split = args.aao
     if "RUST_amino_file_" in amino_file_split:
         amino_file = amino_file_split[16:]
     else:
         amino_file = amino_file_split
 
-    if "/" in args.RUST_tripeptide:
-        tripeptide_file_split = args.RUST_tripeptide.split("/")[-1]
+    if "/" in args.tri:
+        tripeptide_file_split = args.tri.split("/")[-1]
     else:
-        tripeptide_file_split = args.RUST_tripeptide
+        tripeptide_file_split = args.tri
     if "RUST_tripeptide_file_" in tripeptide_file_split:
         tripeptide_file = tripeptide_file_split[21:]
     else:

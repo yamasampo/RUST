@@ -137,6 +137,7 @@ tripeptide/
 synergy/
 predict_profiles/
 plot_transcript/
+plot/
 
 
 .vscode
