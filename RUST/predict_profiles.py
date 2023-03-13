@@ -35,17 +35,8 @@ def rank(lsit1):
     return lsit2
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Correlation between observed and predicted profiles from CDS start + 120 to CDS stop - 60')
-    parser.add_argument('t',metavar='transcriptome', help = 'fasta file of transcripts, CDS start and end may be provided on description line using tab separation e.g. >NM_0001  10  5000, otherwise it searches for longest ORF')
-    parser.add_argument('a',metavar='alignment', help='sorted bam file of alignments to transcriptome')
-    parser.add_argument('offset',metavar='offset', help='nucleotide offset to A-site',type=int )
-    parser.add_argument('l',metavar='lengths', help='lengths of footprints included, for example 28:32 is 28,29,30,31,32')
-    parser.add_argument('rustfile', metavar = 'RUST_codon_file', help='path to file produced from "rust_codon"')
-    parser.add_argument('-o', metavar = 'outfile directory', help='path to outputfile, default is "predict_profiles"',default = "predict_profiles")
-    parser.add_argument('-p', action ="store_true", help='writes all profiles in csv files, may produce >10,000 files',default = False)
-    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
-    args = parser.parse_args(None)    
+def main(args):
+ 
 
     RUST_file = open(args.rustfile)  # file output of RUST_script.py 
     RUST_file.readline()
@@ -64,7 +55,7 @@ def main():
             codon_rust_dict[codon][n-40] = rust_metafootprint[n]    #for 12 codons positions near A-site 
     RUST_file.close()
 
-    mRNA_sequences          =  args.t   #path to fastq file of transcripts
+    mRNA_sequences          =  args.transcriptome   #path to fastq file of transcripts
     in_seq_handle           = open(mRNA_sequences)
     cds_start_dict  = {}
     cds_end_dict    = {}
@@ -83,7 +74,7 @@ def main():
     in_seq_handle.close()
 
     offset          = args.offset 
-    readlen_range   = args.l
+    readlen_range   = args.lengths
     readlen_rangesplit      = readlen_range.split(":")
     if len(readlen_rangesplit) == 1: 
         accepted_read_lengths = [int(readlen_rangesplit[0])]
@@ -97,14 +88,14 @@ def main():
         stop_err( "Lengths of footprints parameter not in correct format, it should be either colon seperated with the second value greater or equal to the first, (28:32) or a single interger (31)")
         
     amino_acids = ['A', 'C', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'M', 'L', 'N', 'Q', 'P', 'S', 'R', 'T', 'W', 'V', 'Y']
-    aligments_A1    = pysam.Samfile(args.a, 'rb')
+    aligments_A1    = pysam.Samfile(args.alignment, 'rb')
 
 
-    if not os.path.exists(args.o) :
-        os.mkdir(args.o )
+    if not os.path.exists(args.Path) :
+        os.mkdir(args.Path )
     if  args.p :
-        if not os.path.exists("%s/rust_profile_predictions"%args.o) :
-            os.mkdir("%s/rust_profile_predictions"%args.o )
+        if not os.path.exists("%s/rust_profile_predictions"%args.Path) :
+            os.mkdir("%s/rust_profile_predictions"%args.Path )
    
     if "/" in  args.rustfile:
         rustfile_split= args.rustfile.split("/")[-1]
@@ -117,7 +108,7 @@ def main():
         alignment_filename = rustfile_split[16:]
     else: alignment_filename = rustfile_split
 
-    correlations_file = open("%s/predict_profiles_%s_%s_%s"%(args.o, alignment_filename, args.offset, length_values), "w")
+    correlations_file = open("%s/predict_profiles_%s_%s_%s"%(args.Path, alignment_filename, args.offset, length_values), "w")
     correlations_file.write("transcript,average read density,Spearman's coefficient,Pearson's coefficient\n")
 
 
@@ -203,8 +194,8 @@ def main():
             spearmanr_value = numpy.corrcoef(rank(profiles_control_codon), rank(profile_expect))[0, 1]
             pearsonr_value = numpy.corrcoef(profiles_control_codon, profile_expect)[0, 1]
             correlations_file.write("%s,%s,%s,%s\n"%(transcript,average_gene_density,spearmanr_value,pearsonr_value))
-            if  args.p :   
-                open_file = open("%s/rust_profile_predictions/observed_predicted_%s_%s_%s_%s.csv"% (args.o,transcript, alignment_filename, args.offset, length_values), "w")
+            if  args.profiles :   
+                open_file = open("%s/rust_profile_predictions/observed_predicted_%s_%s_%s_%s.csv"% (args.Path,transcript, alignment_filename, args.offset, length_values), "w")
                 profile_expect_probablility_index = 0
                 open_file.write("%s\n"%transcript)
                 open_file.write("codon, predicted probability, alignments\n")
@@ -218,4 +209,15 @@ def main():
     correlations_file.close()
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description='Correlation between observed and predicted profiles from CDS start + 120 to CDS stop - 60')
+    parser.add_argument('-t', '--transcriptome', help='fasta file of transcripts, CDS start and end may be provided on description line using tab separation e.g. >NM_0001  10  5000, otherwise it searches for longest ORF'', required=True')
+    parser.add_argument('-a', '--alignment', help='sorted bam file of transcriptome alignments', required=True)
+    parser.add_argument('-o', '--offset', help='nucleotide offset to A-site',type=int )
+    parser.add_argument('-l', '--lengths', help='lengths of footprints included, for example 28:32 is 28,29,30,31,32')
+    parser.add_argument('-P', '--Path', help='path to outputfile, default is "amino"',default = "predict_profiles")
+    parser.add_argument('-r', '--rustfile', help="path to rust file produced by codon")
+    parser.add_argument('-o', metavar = 'outfile directory', help='path to outputfile, default is "predict_profiles"',default = "predict_profiles")
+    parser.add_argument('-p', action ="store_true", help='writes all profiles in csv files, may produce >10,000 files',default = False)
+    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
+    args = parser.parse_args(None)   
+    main(args)

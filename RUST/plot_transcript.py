@@ -32,18 +32,8 @@ try:
 except: pass    
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Plot observed and predicted ribosome profiles')
-    parser.add_argument('t',metavar='transcriptome', help = 'fasta file of transcripts, CDS start and end may be provided on description line using tab separation e.g. >NM_0001  10  5000, otherwise it searches for longest ORF')
-    parser.add_argument('a',metavar='alignment', help='sorted bam file of alignments to transcriptome')
-    parser.add_argument('offset',metavar='offset', help='nucleotide offset to A-site',type=int )
-    parser.add_argument('l',metavar='lengths', help='lengths of footprints included, for example 28:32 is 28,29,30,31,32')
-    parser.add_argument('identifier', metavar = 'transcript identifier', help='Specific transcript to plot (Use of unique identifier is sufficient for example "NM_031946"' )
-    parser.add_argument('rustfile', metavar = 'RUST-codon-file', help='path to file produced from "rust_codon"')
-    parser.add_argument('-o', metavar = 'outfile directory', help='path to outputfile, default is "plot_transcript"',default = "plot_transcript")
-    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
-    args = parser.parse_args(None)    
-        
+def main(args):
+
     RUST_file = open(args.rustfile)  # file output of RUST_script.py
     RUST_file.readline()
     codon_rust_dict = {}
@@ -62,7 +52,7 @@ def main():
     RUST_file.close()
 
 
-    mRNA_sequences          =  args.t   #path to fastq file of transcripts
+    mRNA_sequences          =  args.transcriptome   #path to fastq file of transcripts
     in_seq_handle           = open(mRNA_sequences)
     cds_start_dict  = {}
     cds_end_dict    = {}
@@ -81,7 +71,7 @@ def main():
     in_seq_handle.close()
 
     offset          = args.offset 
-    readlen_range   = args.l
+    readlen_range   = args.lengths
     readlen_rangesplit      = readlen_range.split(":")
     if len(readlen_rangesplit) == 1: 
         accepted_read_lengths = [int(readlen_rangesplit[0])]
@@ -96,7 +86,7 @@ def main():
 
         
     amino_acids = ['A', 'C', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'M', 'L', 'N', 'Q', 'P', 'S', 'R', 'T', 'W', 'V', 'Y']
-    aligments_A1    = pysam.Samfile(args.a, 'rb')
+    aligments_A1    = pysam.Samfile(args.alignment, 'rb')
     
     if "/" in  args.rustfile:
         rustfile_split= args.rustfile.split("/")[-1]
@@ -187,8 +177,8 @@ def main():
                 profile_list[A_site] += 1
         
         sys.stdout.write("Average read density = %s\n"%round(sum(profile_list)/len(profile_list),3))
-        if not os.path.exists(args.o ): os.mkdir(args.o) 
-        open_file = open("%s/observed_predicted_%s_%s_%s_%s.csv"%(args.o,args.identifier, alignment_filename, args.offset, length_values), "w")
+        if not os.path.exists(args.Path ): os.mkdir(args.Path) 
+        open_file = open("%s/observed_predicted_%s_%s_%s_%s.csv"%(args.Path,args.identifier, alignment_filename, args.offset, length_values), "w")
         profiles_control_codon = [profile_list[codon_ind]+profile_list[codon_ind+1]+profile_list[codon_ind+2] for codon_ind in range(0,len(profile_list),3)]
         profile_expect_probablility_index = 0
         open_file.write("%s\n"%transcript)
@@ -258,8 +248,20 @@ def main():
         ax2.set_xlim(0, len(profile_expect_probablility))
         ax.set_xlim(0, len(profile_expect_probablility))
 
-        plt.savefig("%s/observed_predicted_%s_%s_%s_%s.png"%(args.o,args.identifier, alignment_filename, args.offset, length_values))
+        plt.savefig("%s/observed_predicted_%s_%s_%s_%s.png"%(args.Path,args.identifier, alignment_filename, args.offset, length_values))
     except:
         sys.stdout.write("Error producing images\n")
 if __name__ == "__main__":
-    main()
+
+    parser = argparse.ArgumentParser(description='Plot observed and predicted ribosome profiles')
+    parser.add_argument('-t', '--transcriptome', help='fasta file of transcripts, CDS start and end may be provided on description line using tab separation e.g. >NM_0001  10  5000, otherwise it searches for longest ORF'', required=True')
+    parser.add_argument('-a', '--alignment', help='sorted bam file of transcriptome alignments', required=True)
+    parser.add_argument('-o', '--offset', help='nucleotide offset to A-site',type=int )
+    parser.add_argument('-l', '--lengths', help='lengths of footprints included, for example 28:32 is 28,29,30,31,32')
+    parser.add_argument('-P', '--Path', help='path to outputfile, default is "amino"',default = "plot")
+    parser.add_argument('-i', '--identifier', help='Specific transcript to plot (Use of unique identifier is sufficient for example "NM_031946"', required=True)
+    parser.add_argument('-r', '--rustfile', help='path to file produced from "rust_codon"', required=True)
+    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
+    args = parser.parse_args(None)    
+        
+    main(args)

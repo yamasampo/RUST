@@ -22,15 +22,9 @@ import argparse, os, sys
 from RUST.methods import *
 
 
-def main():
+def main(args):
     amino_acids = ['A', 'C', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'M', 'L', 'N', 'Q', 'P', 'S', 'R', 'T', 'W', 'V', 'Y']
 
-    parser = argparse.ArgumentParser(description='Identifies tripeptides that are candidates for synergistic interactions')
-    parser.add_argument('RUST_amino', metavar = 'RUST_amino_file', help='path to file produced from "rust_amino"')
-    parser.add_argument('RUST_tripeptide', metavar = 'RUST_tripeptide_file', help='path to file produced from "rust_tripeptide"')
-    parser.add_argument('-o', metavar = 'outfile directory', help='path to outputfile, default is "synergy"',default = "synergy")
-    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
-    args = parser.parse_args(None)  
 
 
     infileopen = open(args.RUST_tripeptide )
@@ -105,8 +99,8 @@ def main():
             else :
                 list_fold_change.append(coverage_n[number_i] /coverage_n_e)
 
-    if not os.path.exists(args.o ):
-        os.mkdir(args.o )
+    if not os.path.exists(args.Path ):
+        os.mkdir(args.Path )
     if "/" in  args.RUST_amino:
         amino_file_split= args.RUST_amino.split("/")[-1]
     else:
@@ -123,7 +117,7 @@ def main():
         tripeptide_file =tripeptide_file_split[21:]
     else: tripeptide_file =tripeptide_file_split
         
-    outfile = open("%s/synergy_%s_%s"%(args.o,amino_file, tripeptide_file),"w")
+    outfile = open("%s/synergy_%s_%s"%(args.Path,amino_file, tripeptide_file),"w")
     outfile.write("Tripeptide, Standard score, distance of 1st residue from A-site, fold change\n")
     zipped_list = list(zip(list_zscores, list_amino, list_loc,list_fold_change))
     zipped_list.sort()
@@ -134,4 +128,14 @@ def main():
     outfile.close()		
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description='Identifies tripeptides that are candidates for synergistic interactions')
+    parser.add_argument('-t', '--transcriptome', help='fasta file of transcripts, CDS start and end may be provided on description line using tab separation e.g. >NM_0001  10  5000, otherwise it searches for longest ORF'', required=True')
+    parser.add_argument('--aa', help='path to file produced from "rust_amino"', required=True)
+    parser.add_argument('--tri', help='path to file produced from "rust_tripeptide"', required=True)
+    parser.add_argument('-P', '--Path', help='path to outputfile, default is "synergy"',default = "synergy")
+    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
+    args = parser.parse_args(None)  
+
+    main(args)
+
+
