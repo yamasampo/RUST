@@ -18,6 +18,7 @@
 #####################################################################################
 
 import  os,  re, pysam, sys, math, argparse
+from RUST.methods import *
 try:
     import matplotlib as mpl
     mpl.use("Agg")
@@ -66,16 +67,7 @@ def RUST_metagene_plot(infileopen36,ax36) :
     ax36.set_ylabel("Amino acid RUST ratio (observed/expected), log2")
     ax36.axvline(40, color = "red")
 
-def main(): 
-    parser = argparse.ArgumentParser(description='Produces RUST metagene profile of amino acids')
-    parser.add_argument('t',metavar='transcriptome', help = 'fasta file of transcripts, CDS start and end may be provided on description line using tab separation e.g. >NM_0001  10  5000, otherwise it searches for longest ORF')
-    parser.add_argument('a',metavar='alignment', help='sorted bam file of alignments to transcriptome')
-    parser.add_argument('offset',metavar='offset', help='nucleotide offset to A-site',type=int )
-    parser.add_argument('l',metavar='lengths', help='lengths of footprints included, for example 28:32 is 28,29,30,31,32')
-    parser.add_argument('-o', metavar = 'outfile directory', help='path to outputfile, default is "amino"',default = "amino")
-    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
-    args = parser.parse_args(None)  
-
+def main(args): 
 
     mRNA_sequences          =  args.t     #path to fastq file of transcripts
     in_seq_handle           = open(mRNA_sequences)
@@ -298,4 +290,12 @@ def main():
         sys.stdout.write("Error producing images\n") 
         
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description='Produces RUST metagene profile of amino acids')
+    parser.add_argument('t',metavar='transcriptome', help = 'fasta file of transcripts, CDS start and end may be provided on description line using tab separation e.g. >NM_0001  10  5000, otherwise it searches for longest ORF')
+    parser.add_argument('a',metavar='alignment', help='sorted bam file of alignments to transcriptome')
+    parser.add_argument('offset',metavar='offset', help='nucleotide offset to A-site',type=int )
+    parser.add_argument('l',metavar='lengths', help='lengths of footprints included, for example 28:32 is 28,29,30,31,32')
+    parser.add_argument('-o', metavar = 'outfile directory', help='path to outputfile, default is "amino"',default = "amino")
+    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
+    args = parser.parse_args(None)  
+    main(args)

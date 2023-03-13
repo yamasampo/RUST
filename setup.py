@@ -1,8 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
-    name='RUST',
-    version='1.3.0',
-    packages=find_packages(),
-    scripts=['bin/RUST'],
 )   
