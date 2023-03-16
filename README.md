@@ -27,5 +27,5 @@ conda activate RUST
 
 Install required packages using pip
 ```
-python -m pip install -r requirements.txt
+python -m pip install git+https://github.com/JackCurragh/RUST.git
 ```
