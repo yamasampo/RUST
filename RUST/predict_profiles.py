@@ -340,7 +340,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-r", "--rustfile", help="path to rust file produced by codon")
     parser.add_argument(
-        "-o",
+        "--out",
         metavar="outfile directory",
         help='path to outputfile, default is "predict_profiles"',
         default="predict_profiles",
