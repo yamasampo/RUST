@@ -345,21 +345,28 @@ def main(args):
             profile_list
         )  # average gene density calculated
         if average_gene_density != 0:
-            num_codon = len(
-                [
-                    1
-                    for number88 in range(0, len(profile_list), 3)
-                    if (
-                        (
-                            profile_list[number88]
-                            + profile_list[number88 + 1]
-                            + profile_list[number88 + 2]
+            # NOTE: HY addition to understand what aspects of input data are 
+            # causing IndexError. 
+            try:
+                num_codon = len(
+                    [
+                        1
+                        for number88 in range(0, len(profile_list), 3)
+                        if (
+                            (
+                                profile_list[number88]
+                                + profile_list[number88 + 1]
+                                + profile_list[number88 + 2]
+                            )
+                            / 3
                         )
-                        / 3
-                    )
-                    > average_gene_density
-                ]
-            )
+                        > average_gene_density
+                    ]
+                )
+            except IndexError:
+                msg = f'Transcript ID: {transcript}, CDS start={cds_start}, '\
+                      f'end={cds_end}\nprofile_len = {len(profile_list)}'
+                raise IndexError(msg)
             # number of codons that exceed average gene density
             expected_codon_density = float(num_codon) / (
                 len(profile_list) / 3
